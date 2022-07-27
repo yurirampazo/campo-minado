@@ -35,6 +35,10 @@ public class Campo {
     this.minado = minado;
   }
 
+  void setAberto(boolean aberto) {
+    this.aberto = aberto;
+  }
+
   public int getLINHA() {
     return LINHA;
   }

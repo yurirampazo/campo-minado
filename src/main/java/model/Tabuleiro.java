@@ -1,5 +1,7 @@
 package model;
 
+import exception.ExplosaoException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +24,15 @@ public class Tabuleiro {
   }
 
   public void abrir(int linha, int coluna) {
-    CAMPOS.parallelStream()
-          .filter(x -> x.getLINHA() == linha && x.getCOLUNA() == coluna)
-          .findFirst()
-          .ifPresent(Campo::abrir);
+    try {
+      CAMPOS.parallelStream()
+            .filter(x -> x.getLINHA() == linha && x.getCOLUNA() == coluna)
+            .findFirst()
+            .ifPresent(Campo::abrir);
+    } catch (ExplosaoException e) {
+      CAMPOS.forEach(x -> x.setAberto(true));
+      throw e;
+    }
   }
 
   public void alterarMarcacao(int linha, int coluna) {
@@ -55,9 +62,9 @@ public class Tabuleiro {
     long minasArmadas = 0;
 
     do {
-      minasArmadas = CAMPOS.stream().filter(Campo::isMinado).count();
       int aleatorio = (int) (Math.random() * CAMPOS.size());
       CAMPOS.get(aleatorio).setMinado(true);
+      minasArmadas = CAMPOS.stream().filter(Campo::isMinado).count();
     } while (minasArmadas < minas);
   }
 
@@ -72,9 +79,19 @@ public class Tabuleiro {
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    int l = 0;
 
+    sb.append("  ");
+    for (int c = 0; c < linhas; c++) {
+      sb.append(" ");
+      sb.append(c);
+      sb.append(" ");
+    }
+    sb.append("\n");
+
+    int l = 0;
     for (int i = 0; i < linhas; i++) {
+      sb.append(i);
+      sb.append(" ");
       for (int j = 0; j < colunas; j++) {
         sb.append(" ");
         sb.append(CAMPOS.get(l));
