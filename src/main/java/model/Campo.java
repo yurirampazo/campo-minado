@@ -77,4 +77,36 @@ public class Campo {
   boolean vizinhancaSegura() {
     return vizinhos.stream().noneMatch(x -> x.minado);
   }
+
+  boolean objetivoAlcancado() {
+    boolean desvendado = !minado && aberto;
+    boolean protegido = !minado && marcado;
+
+    return desvendado || protegido;
+  }
+
+  long minasNaVizinhanca() {
+    return vizinhos.stream().filter(x -> x.minado).count();
+  }
+
+  void reiniciar() {
+    aberto = false;
+    minado = false;
+    marcado = false;
+  }
+
+  @Override
+  public String toString() {
+    if (marcado) {
+      return "x";
+    } else if (aberto && minado) {
+      return "*";
+    } else if (aberto && minasNaVizinhanca() > 0) {
+      return Long.toString(minasNaVizinhanca());
+    } else if (aberto) {
+      return " ";
+    } else {
+      return "?";
+    }
+  }
 }

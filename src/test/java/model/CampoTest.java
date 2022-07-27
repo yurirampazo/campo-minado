@@ -9,14 +9,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CampoTest {
   Campo campo;
+
   @BeforeEach
   void setUp() {
     campo = new Campo(3, 3);
   }
+
   @AfterEach
   void tearDown() {
     campo = null;
   }
+
   @Test
   void testAdicionarVizinho() {
     Campo vizinho = new Campo(3, 2);
@@ -34,6 +37,7 @@ class CampoTest {
 
     assertTrue(resultado, "Deve ser verdadeiro");
   }
+
   @Test
   void testAdicionarVizinhoFalse() {
 
@@ -62,7 +66,7 @@ class CampoTest {
   @Test
   void testAbrirMarcado() {
     campo.alterarMarcacao();
-    assertFalse( campo.abrir(), "Deve ser falso");
+    assertFalse(campo.abrir(), "Deve ser falso");
   }
 
   @Test
@@ -103,4 +107,69 @@ class CampoTest {
 
     assertTrue(vizinho1.isAberto() && !vizinho2.isAberto());
   }
+
+  @Test
+  void testObjetivoAlcancado() {
+    campo.setMinado(false);
+
+    Campo vizinho = new Campo(2, 3);
+    vizinho.setMinado(false);
+    vizinho.alterarMarcacao();
+    campo.abrir();
+
+    assertTrue(campo.objetivoAlcancado());
+  }
+
+  @Test
+  void testMinaVizinha() {
+    campo.setMinado(false);
+
+    Campo vizinho = new Campo(2, 3);
+    campo.adicionarVizinho(vizinho);
+    vizinho.setMinado(true);
+    campo.abrir();
+
+    assertEquals(1L, campo.minasNaVizinhanca());
+  }
+
+  @Test
+  void testReiniciar() {
+    campo.reiniciar();
+
+    assertFalse(campo.isMinado()
+          && campo.isAberto()
+          && campo.isMarcado());
+  }
+
+
+  @Test
+  void testToString() {
+    //Teste campo marcado
+    campo.alterarMarcacao();
+    assertEquals("x", campo.toString());
+
+    //Teste Campo minado
+    campo.alterarMarcacao();
+    campo.abrir();
+    campo.setMinado(true);
+
+    assertEquals("*", campo.toString());
+
+    //Teste campo vazio
+    campo.reiniciar();
+    campo.abrir();
+    assertEquals(" ", campo.toString());
+
+    //teste campo com campos vizinhos minados
+    Campo vizinho = new Campo(2, 3);
+    vizinho.setMinado(true);
+    campo.adicionarVizinho(vizinho);
+
+    assertEquals("1", campo.toString());
+
+    //teste campo não aberto
+    campo.reiniciar();
+    assertEquals("?", campo.toString());
+  }
+
 }
