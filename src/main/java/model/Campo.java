@@ -35,6 +35,14 @@ public class Campo {
     this.minado = minado;
   }
 
+  public int getLINHA() {
+    return LINHA;
+  }
+
+  public int getCOLUNA() {
+    return COLUNA;
+  }
+
   boolean adicionarVizinho(Campo vizinho) {
     boolean linhaDiferente = LINHA != vizinho.LINHA;
     boolean coluhaDiferente = COLUNA != vizinho.COLUNA;
